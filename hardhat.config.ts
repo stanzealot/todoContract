@@ -1,41 +1,32 @@
-import type { HardhatUserConfig } from "hardhat/config";
-
-import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
-import { configVariable } from "hardhat/config";
+import { HardhatUserConfig, vars } from 'hardhat/config';
+import '@nomicfoundation/hardhat-toolbox';
 
 const config: HardhatUserConfig = {
-  plugins: [hardhatToolboxViemPlugin],
-  solidity: {
-    profiles: {
-      default: {
-        version: "0.8.28",
-      },
-      production: {
-        version: "0.8.28",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
-        },
-      },
+  solidity: '0.8.28',
+  defaultNetwork: 'liskSepolia',
+
+  networks: {
+    liskSepolia: {
+      url: 'https://rpc.sepolia-api.lisk.com',
+      accounts: vars.has('PRIVATE_KEY') ? [vars.get('PRIVATE_KEY')] : [],
+      chainId: 4202,
     },
   },
-  networks: {
-    hardhatMainnet: {
-      type: "edr-simulated",
-      chainType: "l1",
+
+  etherscan: {
+    apiKey: {
+      liskSepolia: 'abc',
     },
-    hardhatOp: {
-      type: "edr-simulated",
-      chainType: "op",
-    },
-    sepolia: {
-      type: "http",
-      chainType: "l1",
-      url: configVariable("SEPOLIA_RPC_URL"),
-      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
-    },
+    customChains: [
+      {
+        network: 'liskSepolia',
+        chainId: 4202,
+        urls: {
+          apiURL: 'https://sepolia-blockscout.lisk.com/api',
+          browserURL: 'https://sepolia-blockscout.lisk.com/',
+        },
+      },
+    ],
   },
 };
 
